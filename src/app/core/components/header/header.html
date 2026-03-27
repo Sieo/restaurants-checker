@@ -1,0 +1,27 @@
+<header class="header">
+  <div class="header-container">
+    <div class="flex items-center gap-2">
+      <h1 class="header-logo">
+        <a class="no-style" routerLink="/"> Restaurant Ratings </a>
+      </h1>
+    </div>
+    <div class="header-nav">
+      <div class="main-nav">
+        <a routerLink="/cuisines" class="nav-link no-style">Cuisines</a>
+        <a routerLink="/restaurants" class="nav-link no-style">Restaurants</a>
+      </div>
+      @if (isLoggedIn()) {
+        <div class="header-nav">
+          <div className="user-info">
+            <span class="user-email">{{ userProfile()?.email }}</span>
+          </div>
+          <button (click)="logout()" class="btn-logout">
+            <span class="text">Logout</span>
+          </button>
+        </div>
+      } @else {
+        <button class="btn-login" [routerLink]="['/login']">Login</button>
+      }
+    </div>
+  </div>
+</header>

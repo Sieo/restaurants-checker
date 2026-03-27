@@ -1,0 +1,20 @@
+<main class="container">
+  <div class="header">
+    <div class="flex column gap-4">
+      <h2>Liste des restaurants</h2>
+      <p>{{ restaurants.value()?.length }} restaurants trouvé</p>
+    </div>
+    <div class="actions">
+      <button class="primary">Random Pick</button>
+    </div>
+  </div>
+  <div class="restaurant-grid">
+    @for (restaurant of restaurants.value(); track restaurant) {
+      <app-restaurant-card
+        [restaurant]="restaurant"
+        [hasAction]="true"
+        (refresh)="onRefresh(restaurant.id)"
+      ></app-restaurant-card>
+    }
+  </div>
+</main>

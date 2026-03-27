@@ -1,0 +1,92 @@
+<main class="container">
+  <h1>Restaurant</h1>
+  <div class="grid">
+    <div class="preview">
+      <app-restaurant-card [restaurant]="restaurant()!"></app-restaurant-card>
+    </div>
+    <div>
+      <form [formGroup]="form" class="form" (submit)="addRestaurant()">
+        <fieldset>
+          <label for="image_url">URL de l'image:</label>
+          <input id="image_url" type="text" formControlName="image_url" />
+        </fieldset>
+        <fieldset>
+          <label for="name">Nom du restaurant:</label>
+          <input id="name" type="text" formControlName="name" required />
+          @if (
+            form.get("name")?.dirty && form.get("name")?.errors?.["required"]
+          ) {
+            <p class="error">Le nom du restaurant est requis.</p>
+          }
+        </fieldset>
+        <fieldset>
+          <label for="cuisine">Cuisine:</label>
+          <select id="cuisine" formControlName="cuisine" required>
+            <option value="" disabled selected>Choisissez une cuisine</option>
+            @for (cuisine of cuisines()?.data; track cuisine.id) {
+              <option [value]="cuisine.id">{{ cuisine.name }}</option>
+            }
+          </select>
+          @if (
+            form.get("cuisine")?.dirty &&
+            form.get("cuisine")?.errors?.["required"]
+          ) {
+            <p class="error">La cuisine est requise.</p>
+          }
+        </fieldset>
+        <fieldset>
+          <label for="adress">Adresse:</label>
+          <input id="adress" type="text" formControlName="address" />
+        </fieldset>
+        <fieldset>
+          <label for="description">Description:</label>
+          <textarea id="description" formControlName="description"></textarea>
+        </fieldset>
+        <fieldset>
+          <div>
+            <label for="priceRange1">1</label>
+            <input
+              type="radio"
+              name="priceRange"
+              id="priceRange1"
+              formControlName="priceRange"
+              [value]="1"
+            />
+            <label for="priceRange2">2</label>
+            <input
+              type="radio"
+              name="priceRange"
+              id="priceRange2"
+              formControlName="priceRange"
+              [value]="2"
+            />
+            <label for="priceRange3">3</label>
+            <input
+              type="radio"
+              name="priceRange"
+              id="priceRange3"
+              formControlName="priceRange"
+              [value]="3"
+            />
+          </div>
+        </fieldset>
+        <button
+          class="primary full-width"
+          type="submit"
+          [disabled]="!(form.dirty && form.valid)"
+        >
+          {{ restaurantId() ? "Modifier" : "Ajouter un restaurant" }}
+        </button>
+        @if (restaurantId()) {
+          <button
+            class="alert full-width"
+            type="button"
+            (click)="deleteRestaurant()"
+          >
+            Supprimer
+          </button>
+        }
+      </form>
+    </div>
+  </div>
+</main>

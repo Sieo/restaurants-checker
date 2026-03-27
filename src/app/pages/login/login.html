@@ -1,0 +1,58 @@
+<main class="container">
+  <form class="login-form" [formGroup]="loginForm" (submit)="onSubmit()">
+    <legend>{{ !isSigningUp() ? "Connexion" : "Création de compte" }}</legend>
+    <fieldset>
+      <label for="email">Email:</label>
+      <input id="email" type="email" formControlName="email" required />
+      @if (loginForm.touched && loginForm.get("email")?.errors?.["required"]) {
+        <p class="error">L'email est requis.</p>
+      }
+    </fieldset>
+    <fieldset>
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        name="password"
+        id="password"
+        formControlName="password"
+        required
+      />
+      @if (
+        loginForm.touched && loginForm.get("password")?.errors?.["required"]
+      ) {
+        <p class="error">Le mot de passe est requis.</p>
+      }
+    </fieldset>
+    <fieldset>
+      <button
+        class="light justify-self-end"
+        type="button"
+        (click)="forgotPassword()"
+      >
+        Mot de passe oublié
+      </button>
+    </fieldset>
+    <div class="actions">
+      <button class="primary full-width" type="submit">
+        {{ !isSigningUp() ? "Se connecter" : "Créer un compte" }}
+      </button>
+
+      @if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
+      }
+      <div class="flex">
+        @if (!isSigningUp()) {
+          <i>Vous n'avez pas de compte ? </i>
+          <button class="light" type="button" (click)="isSigningUp.set(true)">
+            Créer un compte
+          </button>
+        } @else {
+          <i>Vous avez déjà un compte ? </i>
+          <button class="light" type="button" (click)="isSigningUp.set(false)">
+            Se connecter
+          </button>
+        }
+      </div>
+    </div>
+  </form>
+</main>

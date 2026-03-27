@@ -1,1 +1,174 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --font-size: 16px;
+  --spacing: 0.25rem;
+  --text-2xl: 1.5rem;
+  --text-xl: 1.25rem;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --main-bg: #1b6ae9;
+  --primary-btn: #1b6ae9cf;
+  --error-color: #ef4444;
+  --primary-foreground-btn: oklch(1 0 0);
+  --radius: 0.625rem;
+  --text-base: 1rem;
+}
+
+*,
+::after,
+::before,
+::backdrop {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+body {
+  font-family: ui-sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+  margin: 0 0 0.5rem 0;
+  color: #111827;
+}
+
+a.no-style {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  color: var(--primary-btn);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+  background-color: var(--primary-foreground-btn);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  appearance: button;
+  cursor: pointer;
+
+  &:hover {
+    background-color: oklch(0.9 0 0);
+    transition: all 0.2s ease-in-out;
+  }
+
+  &.primary {
+    background-color: var(--primary-btn);
+    color: var(--primary-foreground-btn);
+    cursor: pointer;
+
+    &:hover {
+      background-color: oklch(0.8 0 0);
+    }
+  }
+
+  &.light {
+    padding: 0;
+    text-decoration: underline;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+      background-color: transparent;
+    }
+  }
+
+  &.icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s;
+
+    & .icon.filled {
+      color: var(--main-bg);
+      fill: var(--main-bg);
+    }
+  }
+
+  &.alert {
+    background-color: #dd2929dc;
+    color: white;
+    transition: all 0.5s;
+
+    &:hover {
+      background-color: #ac2121;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: oklch(0.8 0 0);
+    color: var(--primary-foreground-btn);
+  }
+}
+
+.align-self-end {
+  align-self: flex-end;
+}
+
+.justify-self-end {
+  justify-self: flex-end;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing);
+
+  &.column {
+    flex-direction: column;
+  }
+}
+
+form {
+  label {
+    align-self: flex-start;
+  }
+
+  fieldset {
+    width: 100%;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--main-bg);
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s;
+
+    &:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  .error {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: var(--spacing);
+  }
+}
