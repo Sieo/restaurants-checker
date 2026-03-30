@@ -8,9 +8,11 @@ import {
 } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { map } from "rxjs";
+import { Router } from "@angular/router";
+import { filter, map, switchMap } from "rxjs";
 import { RestaurantDTO } from "../../core/models/restaurant-dto";
 import { Cuisines } from "../../core/services/cuisines";
+import { PopupService } from "../../core/services/popup.service";
 import { RestaurantService } from "../../core/services/restaurant";
 import { Supabase } from "../../core/services/supabase";
 import { RestaurantCard } from "../../shared/components/restaurant-card/restaurant-card";
@@ -26,6 +28,8 @@ export class RestaurantsComponent {
   private readonly cuisinesService = inject(Cuisines);
   private readonly supabase = inject(Supabase);
   private readonly fb: FormBuilder = inject(FormBuilder);
+  private readonly popupService = inject(PopupService);
+  private readonly router: Router = inject(Router);
 
   cuisines = toSignal(this.cuisinesService.getAllCuisines());
 
@@ -58,13 +62,10 @@ export class RestaurantsComponent {
 
   constructor() {
     effect(() => {
-      console.log("need refresh: ", this.refresh());
-      console.log("restaurant ID ", this.restaurantId());
       if (this.restaurantId() || this.refresh()) {
         this.restaurantService
           .getRestaurantById(this.restaurantId()!)
           .subscribe((res) => {
-            console.log(res);
             this.form.patchValue(res?.data?.[0]);
           });
       }
@@ -73,15 +74,37 @@ export class RestaurantsComponent {
 
   addRestaurant() {
     if (this.form.valid) {
-      const restaurant: RestaurantDTO = this.form.value as RestaurantDTO;
-      this.restaurantService
-        .addRestaurant(restaurant, this.supabase.clientId!)
-        .subscribe((res) => {
-          console.log(res);
-          this.form.reset();
-        });
+      if (this.restaurantId()) {
+        const restaurant: RestaurantDTO = this.form.value as RestaurantDTO;
+        this.restaurantService
+          .updateRestaurant(this.restaurantId()!, restaurant)
+          .subscribe((res) => {
+            console.log(res);
+            this.refresh.set(!this.refresh());
+          });
+      } else {
+        const restaurant: RestaurantDTO = this.form.value as RestaurantDTO;
+        this.restaurantService
+          .addRestaurant(restaurant, this.supabase.clientId!)
+          .subscribe((res) => {
+            console.log(res);
+            this.form.reset();
+          });
+      }
     }
   }
 
-  deleteRestaurant() {}
+  deleteRestaurant() {
+    this.popupService
+      .open("Confirmer", "Confirmez vous la suppression ?")
+      .pipe(
+        filter((res) => res),
+        switchMap(() =>
+          this.restaurantService.deleteRestaurant(this.restaurantId()!),
+        ),
+      )
+      .subscribe(() => {
+        this.router.navigate(["/"]);
+      });
+  }
 }

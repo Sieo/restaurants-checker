@@ -86,9 +86,31 @@ export class RestaurantService {
     );
   }
 
+  updateRestaurant(restaurantId: string, restaurant: RestaurantDTO) {
+    return from(
+      this.supabase.client
+        .from("restaurants")
+        .update({ ...restaurant })
+        .eq("id", restaurantId),
+    );
+  }
+
   getRestaurantById(id: string) {
     return from(
       this.supabase.client.from("restaurants").select("*").eq("id", id),
+    );
+  }
+
+  addRating(restaurantId: string, rating: number) {
+    return from(
+      this.supabase.client
+        .from("ratings")
+        .insert({
+          rating,
+          user_id: this.supabase.clientId,
+          restaurant_id: restaurantId,
+        })
+        .select(),
     );
   }
 
@@ -100,6 +122,12 @@ export class RestaurantService {
         .eq("user_id", this.supabase.clientId)
         .eq("restaurant_id", restaurantId)
         .select(),
+    );
+  }
+
+  deleteRestaurant(restaurantId: string) {
+    return from(
+      this.supabase.client.from("restaurants").delete().eq("id", restaurantId),
     );
   }
 }

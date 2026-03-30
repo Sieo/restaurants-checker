@@ -20,6 +20,15 @@ main.container {
   gap: 1.5rem;
 }
 
+@media screen and (max-width: 450px) {
+  .restaurant-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+}
+
 @media (min-width: 768px) {
   .restaurant-grid {
     grid-template-columns: repeat(2, 1fr);

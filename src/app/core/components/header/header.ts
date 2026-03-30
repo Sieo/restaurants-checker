@@ -1,4 +1,4 @@
-import { Component, computed, inject } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
 import { map } from "rxjs";
@@ -19,7 +19,18 @@ export class Header {
   isLoggedIn = toSignal(
     this.supabase.session$.pipe(map((session) => !!session)),
   );
-  public userProfile = computed(() => this.user()?.data?.user || null);
+  public userProfile = computed(() => {
+    if (this.isLoggedIn()) {
+      return this.user()?.data?.user || null;
+    }
+    return null;
+  });
+
+  protected readonly isMenuOpen = signal(false);
+
+  toggleMenu() {
+    this.isMenuOpen.set(!this.isMenuOpen());
+  }
 
   logout() {
     this.authService.signOut().subscribe();

@@ -18,7 +18,7 @@ main.container {
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) * 2);
-  max-width: 400px;
+  max-width: 450px;
   margin: auto;
   align-items: center;
   background-color: #f9f9f9;

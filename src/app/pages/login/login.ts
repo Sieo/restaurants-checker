@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
+import { Router } from "@angular/router";
 import { catchError } from "rxjs";
 import { AuthService } from "../../core/services/auth";
 
@@ -18,6 +19,7 @@ import { AuthService } from "../../core/services/auth";
 export class LoginComponent {
   private readonly fb: FormBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   isSigningUp: WritableSignal<boolean> = signal(false);
 
@@ -29,12 +31,20 @@ export class LoginComponent {
   errorMessage: WritableSignal<string | null> = signal(null);
 
   forgotPassword() {
+    this.errorMessage.set(null);
+    if (!this.loginForm.value.email) {
+      this.errorMessage.set(
+        "Veuillez entrer votre adresse email pour réinitialiser votre mot de passe.",
+      );
+      return;
+    }
     this.authService
-      .sendForgotPasswordEmail(this.loginForm.value.email!)
+      .sendForgotPasswordEmail(this.loginForm.value.email)
       .subscribe();
   }
 
   onSubmit() {
+    this.errorMessage.set(null);
     if (this.loginForm.valid) {
       if (this.isSigningUp()) {
         console.log("Signing up with", this.loginForm.value);
@@ -43,6 +53,7 @@ export class LoginComponent {
           .subscribe({
             next: (response) => {
               console.log("Sign-up successful:", response);
+              this.router.navigate(["/"]);
             },
             error: (error) => {
               console.error("Sign-up error:", error);
@@ -85,5 +96,6 @@ export class LoginComponent {
           });
       }
     }
+    this.loginForm.markAllAsTouched();
   }
 }

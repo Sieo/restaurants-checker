@@ -41,13 +41,26 @@ export class RestaurantCard {
   });
 
   updateRating(note: number, restaurantId: string) {
-    this.restaurantService.updateRating(restaurantId, note).subscribe((res) => {
-      this.restaurant.update((rest) => {
-        rest!.my_rating = (res.data![0] as RestaurantDTO)?.rating ?? 0;
-        return rest;
+    // I didn't rate it before
+    if (this.restaurant()?.my_rating === null) {
+      this.restaurantService.addRating(restaurantId, note).subscribe((res) => {
+        this.restaurant.update((rest) => {
+          rest!.my_rating = (res.data![0] as RestaurantDTO)?.rating ?? 0;
+          return rest;
+        });
+        this.refresh.emit(true);
       });
-      this.refresh.emit(true);
-    });
+    } else {
+      this.restaurantService
+        .updateRating(restaurantId, note)
+        .subscribe((res) => {
+          this.restaurant.update((rest) => {
+            rest!.my_rating = (res.data![0] as RestaurantDTO)?.rating ?? 0;
+            return rest;
+          });
+          this.refresh.emit(true);
+        });
+    }
   }
 
   openInMaps(address: string) {

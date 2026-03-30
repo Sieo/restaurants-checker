@@ -121,3 +121,10 @@
     margin-top: 0.75rem;
   }
 }
+
+@media screen and (max-width: 450px) {
+  .restaurant-card {
+    width: 100%;
+    max-width: none;
+  }
+}

@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 :root {
   --font-size: 16px;
   --spacing: 0.25rem;
@@ -6,6 +8,7 @@
   --font-weight-medium: 500;
   --font-weight-bold: 700;
   --main-bg: #1b6ae9;
+  --main-bg-lighten: #1b6ae9ac;
   --primary-btn: #1b6ae9cf;
   --error-color: #ef4444;
   --primary-foreground-btn: oklch(1 0 0);
@@ -24,7 +27,7 @@
 }
 
 body {
-  font-family: ui-sans-serif;
+  font-family: "Montserrat", sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -170,5 +173,14 @@ form {
     color: var(--error-color);
     font-size: 0.875rem;
     margin-top: var(--spacing);
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .container .grid {
+    display: flex !important;
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+    align-items: center;
   }
 }
