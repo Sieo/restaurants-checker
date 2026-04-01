@@ -80,7 +80,6 @@ export class LoginComponent {
           )
           .subscribe((response) => {
             console.log("Sign-in successful:", response);
-
             // The error can be in the response...
             if (response.error) {
               if (response.error.message === "Invalid login credentials") {
@@ -92,6 +91,8 @@ export class LoginComponent {
                   "Une erreur est survenue lors de la connexion. Veuillez réessayer.",
                 );
               }
+            } else {
+              this.router.navigate(["/"]);
             }
           });
       }

@@ -6,69 +6,20 @@
       </h1>
     </div>
     <div class="header-nav">
-      <div class="main-nav">
-        <ul>
-          <li><a class="nav-link no-style" routerLink="/">Accueil</a></li>
-          @if (isLoggedIn()) {
-            <li class="dropdown">
-              <a class="nav-link no-style">Dashboard</a>
-              <div class="dropdown-content">
-                <a routerLink="/dashboard/cuisines" class="nav-link no-style"
-                  >Cuisines</a
-                >
-                <a routerLink="/dashboard/restaurants" class="nav-link no-style"
-                  >Restaurants</a
-                >
-              </div>
-            </li>
-          }
-        </ul>
-      </div>
-      @if (isLoggedIn()) {
-        <div class="header-nav">
-          <div className="user-info">
-            <span class="user-email">{{ userProfile()?.email }}</span>
-          </div>
-          <button (click)="logout()" class="btn-logout">
-            <span class="text">Logout</span>
-          </button>
-        </div>
-      } @else {
+      @if (!isLoggedIn()) {
         <button class="btn-login" [routerLink]="['/login']">Login</button>
       }
     </div>
-    <div class="header-nav-mobile">
-      <button class="no-style" (click)="toggleMenu()">
-        <span class="hamburger-icon">&#9776;</span>
-      </button>
-      <div class="main-nav-mobile" [class.open]="isMenuOpen()">
-        <ul>
-          <li>
-            <a class="nav-link no-style" routerLink="/" (click)="toggleMenu()"
-              >Accueil</a
-            >
-          </li>
-          @if (isLoggedIn()) {
-            <li class="dropdown">
-              <a class="nav-link no-style">Dashboard</a>
-              <div class="dropdown-content">
-                <a
-                  routerLink="/dashboard/cuisines"
-                  (click)="toggleMenu()"
-                  class="nav-link no-style"
-                  >Cuisines</a
-                >
-                <a
-                  routerLink="/dashboard/restaurants"
-                  (click)="toggleMenu()"
-                  class="nav-link no-style"
-                  >Restaurants</a
-                >
-              </div>
-            </li>
-          }
-        </ul>
+    @if (isLoggedIn()) {
+      <div class="header-nav-mobile">
+        <button class="no-style drawer-toggle" (click)="toggleMenu()">
+          <span class="hamburger-icon">&#9776;</span>
+        </button>
       </div>
-    </div>
+    }
   </div>
+  <app-nav-drawer
+    [open]="isDrawerOpen()"
+    (close)="closeDrawer()"
+  ></app-nav-drawer>
 </header>

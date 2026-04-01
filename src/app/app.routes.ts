@@ -8,11 +8,11 @@ const authGuard = () => {
   const router = inject(Router);
 
   const isLogged = toSignal(auth.isLoggedIn());
-  if (!isLogged) {
+  if (!isLogged()) {
     router.navigate(["/login"]);
     return false;
   }
-  return isLogged;
+  return isLogged();
 };
 
 export const routes: Routes = [

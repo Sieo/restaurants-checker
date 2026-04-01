@@ -4,10 +4,11 @@ import { RouterModule } from "@angular/router";
 import { map } from "rxjs";
 import { AuthService } from "../../services/auth";
 import { Supabase } from "../../services/supabase";
+import { NavDrawer } from "../nav-drawer/nav-drawer";
 
 @Component({
   selector: "app-header",
-  imports: [RouterModule],
+  imports: [RouterModule, NavDrawer],
   templateUrl: "./header.html",
   styleUrl: "./header.css",
 })
@@ -26,10 +27,14 @@ export class Header {
     return null;
   });
 
-  protected readonly isMenuOpen = signal(false);
+  protected readonly isDrawerOpen = signal(false);
 
   toggleMenu() {
-    this.isMenuOpen.set(!this.isMenuOpen());
+    this.isDrawerOpen.set(!this.isDrawerOpen());
+  }
+
+  closeDrawer() {
+    this.isDrawerOpen.set(false);
   }
 
   logout() {

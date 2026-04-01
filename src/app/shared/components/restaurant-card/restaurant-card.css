@@ -78,6 +78,7 @@
     color: #6b7280;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
   }
 
   .restaurant-cuisine-badge {
@@ -119,6 +120,10 @@
     border-top: 1px solid #e5e7eb;
     padding-top: 1rem;
     margin-top: 0.75rem;
+  }
+
+  .link-btn {
+    font-size: 0.875rem;
   }
 }
 

@@ -1,0 +1,39 @@
+@if (open) {
+  <div class="drawer-backdrop" (click)="closeDrawer()"></div>
+}
+<aside
+  class="nav-drawer"
+  [class.open]="open"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Navigation drawer"
+>
+  <div class="drawer-top">
+    <h2>Navigation</h2>
+    <button
+      class="close-button no-style"
+      (click)="closeDrawer()"
+      aria-label="Close drawer"
+    >
+      ×
+    </button>
+  </div>
+  <nav class="drawer-nav">
+    <a routerLink="/" (click)="closeDrawer()" class="drawer-link">Accueil</a>
+    <a
+      routerLink="/dashboard/cuisines"
+      (click)="closeDrawer()"
+      class="drawer-link"
+      >Cuisines</a
+    >
+    <a
+      routerLink="/dashboard/restaurants"
+      (click)="closeDrawer()"
+      class="drawer-link"
+      >Restaurants</a
+    >
+  </nav>
+  <div class="drawer-footer">
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </div>
+</aside>
