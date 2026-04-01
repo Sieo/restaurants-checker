@@ -29,12 +29,13 @@ jobs:
       - name: Build app for GitHub Pages
         run: |
           npm run build -- --base-href ./
+          cp dist/restaurants-fluo/browser/index.html dist/restaurants-fluo/browser/404.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/restaurants-fluo
+          publish_dir: ./dist/restaurants-fluo/browser
           publish_branch: gh-pages
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
