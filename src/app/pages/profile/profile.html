@@ -1,0 +1,56 @@
+<main class="container">
+  <form class="login-form" [formGroup]="profileForm" (submit)="onSubmit()">
+    <legend>Mon profil</legend>
+
+    <fieldset>
+      <label for="username">Nom d'utilisateur</label>
+      <input id="username" type="text" formControlName="username" />
+      @if (
+        profileForm.touched && profileForm.get("username")?.errors?.["required"]
+      ) {
+        <p class="error">Le nom d'utilisateur est requis.</p>
+      }
+      @if (
+        profileForm.touched &&
+        profileForm.get("username")?.errors?.["minlength"]
+      ) {
+        <p class="error">
+          Le nom d'utilisateur doit contenir au moins 2 caractères.
+        </p>
+      }
+    </fieldset>
+
+    <fieldset class="avatar-fieldset">
+      <label for="avatar_url">Avatar</label>
+
+      @if (avatarPreview()) {
+        <img
+          class="avatar-preview"
+          [src]="avatarPreview()"
+          alt="Aperçu de l'avatar"
+        />
+      }
+
+      <input
+        id="avatar_url"
+        type="url"
+        formControlName="avatar_url"
+        placeholder="URL de l'avatar"
+      />
+      <p class="hint">Vous pouvez aussi téléverser une image ci-dessous.</p>
+      <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
+    </fieldset>
+
+    <div class="actions">
+      <button class="primary full-width" type="submit" [disabled]="isSaving()">
+        {{ isSaving() ? "Enregistrement..." : "Enregistrer le profil" }}
+      </button>
+      @if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
+      }
+      @if (successMessage()) {
+        <p class="success">{{ successMessage() }}</p>
+      }
+    </div>
+  </form>
+</main>

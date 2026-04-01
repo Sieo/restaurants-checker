@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
-import { filter, from, map, Observable, switchMap } from "rxjs";
+import { from, map, Observable } from "rxjs";
 import { Supabase } from "./supabase";
 
 @Injectable({
@@ -57,15 +57,14 @@ export class AuthService {
     return from(this.supabase.client.auth.getSession()).pipe(
       map(({ data }) => !!data.session),
     );
-    // return this.supabase.session$.pipe(map((session) => !!session));
   }
 
   getUser() {
-    return this.isLoggedIn().pipe(
-      filter((loggedIn) => loggedIn),
-      switchMap(() => {
-        return from(this.supabase.client.auth.getUser());
-      }),
-    );
+    return from(this.supabase.client.auth.getUser());
+    // return this.isLoggedIn().pipe(
+    //   filter((loggedIn) => loggedIn),
+    //   switchMap(() => {
+    //   }),
+    // );
   }
 }

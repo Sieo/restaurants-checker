@@ -4,7 +4,7 @@ import {
   createClient,
   SupabaseClient,
 } from "@supabase/supabase-js";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map } from "rxjs";
 import { environment } from "../../environment";
 
 @Injectable({
@@ -45,5 +45,9 @@ export class Supabase {
 
   get client(): SupabaseClient {
     return this.supabaseClient;
+  }
+
+  get user$() {
+    return this.session$.pipe(map((session) => session?.user || null));
   }
 }

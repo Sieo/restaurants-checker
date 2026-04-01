@@ -6,17 +6,28 @@
       </h1>
     </div>
     <div class="header-nav">
-      @if (!isLoggedIn()) {
+      @if (isLoggedIn()) {
+        <div class="user-avatar">
+          <div
+            class="avatar"
+            [class.has-image]="!!avatarUrl()"
+            [style.backgroundImage]="
+              avatarUrl() ? 'url(' + avatarUrl() + ')' : null
+            "
+            (click)="toProfile()"
+          ></div>
+        </div>
+      } @else {
         <button class="btn-login" [routerLink]="['/login']">Login</button>
       }
+      @if (isLoggedIn()) {
+        <div class="header-nav-mobile">
+          <button class="no-style drawer-toggle" (click)="toggleMenu()">
+            <span class="hamburger-icon">&#9776;</span>
+          </button>
+        </div>
+      }
     </div>
-    @if (isLoggedIn()) {
-      <div class="header-nav-mobile">
-        <button class="no-style drawer-toggle" (click)="toggleMenu()">
-          <span class="hamburger-icon">&#9776;</span>
-        </button>
-      </div>
-    }
   </div>
   <app-nav-drawer
     [open]="isDrawerOpen()"

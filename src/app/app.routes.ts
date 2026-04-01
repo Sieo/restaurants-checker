@@ -1,18 +1,17 @@
 import { inject } from "@angular/core";
 import { Router, Routes } from "@angular/router";
+import { map } from "rxjs";
 import { AuthService } from "./core/services/auth";
 
 const authGuard = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  return auth.isLoggedIn().subscribe((loggedIn) => {
-    if (!loggedIn) {
-      router.navigate(["/login"]);
-      return false;
-    }
-    return true;
-  });
+  return auth.isLoggedIn().pipe(
+    map((loggedIn) => {
+      return loggedIn || router.createUrlTree(["/login"]);
+    }),
+  );
 };
 
 export const routes: Routes = [
@@ -26,6 +25,12 @@ export const routes: Routes = [
     path: "login",
     loadComponent: () =>
       import("./pages/login/login").then((m) => m.LoginComponent),
+  },
+  {
+    path: "profile",
+    loadComponent: () =>
+      import("./pages/profile/profile").then((m) => m.ProfileComponent),
+    canActivate: [authGuard],
   },
   {
     path: "dashboard/cuisines",

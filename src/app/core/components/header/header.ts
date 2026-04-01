@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { RouterModule } from "@angular/router";
-import { map } from "rxjs";
+import { Router, RouterModule } from "@angular/router";
 import { AuthService } from "../../services/auth";
 import { Supabase } from "../../services/supabase";
 import { NavDrawer } from "../nav-drawer/nav-drawer";
@@ -15,16 +14,24 @@ import { NavDrawer } from "../nav-drawer/nav-drawer";
 export class Header {
   private readonly supabase = inject(Supabase);
   private readonly authService: AuthService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  private readonly user = toSignal(this.authService.getUser());
-  isLoggedIn = toSignal(
-    this.supabase.session$.pipe(map((session) => !!session)),
-  );
+  private readonly user = toSignal(this.supabase.user$);
+  isLoggedIn = toSignal(this.authService.isLoggedIn());
   public userProfile = computed(() => {
     if (this.isLoggedIn()) {
-      return this.user()?.data?.user || null;
+      console.log("PRofile updated:", this.user());
+      return this.user() || null;
     }
     return null;
+  });
+
+  public avatarUrl = computed(() => {
+    const user = this.userProfile();
+    const metadata = user?.user_metadata as Record<string, unknown> | undefined;
+    return typeof metadata?.["avatar_url"] === "string"
+      ? metadata["avatar_url"]
+      : null;
   });
 
   protected readonly isDrawerOpen = signal(false);
@@ -39,5 +46,9 @@ export class Header {
 
   logout() {
     this.authService.signOut().subscribe();
+  }
+
+  toProfile() {
+    this.router.navigate(["/profile"]);
   }
 }
