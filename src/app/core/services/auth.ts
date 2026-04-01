@@ -1,4 +1,5 @@
 import { inject, Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
 import { filter, from, map, Observable, switchMap } from "rxjs";
 import { Supabase } from "./supabase";
@@ -8,6 +9,7 @@ import { Supabase } from "./supabase";
 })
 export class AuthService {
   private readonly supabase: Supabase = inject(Supabase);
+  private readonly router = inject(Router);
 
   signUp(email: string, password: string): Observable<AuthResponse> {
     return from(
@@ -34,7 +36,13 @@ export class AuthService {
   }
 
   signOut() {
-    return from(this.supabase.client.auth.signOut());
+    return from(this.supabase.client.auth.signOut()).pipe(
+      map(() => {
+        // Clear the auth session in Supabase service
+        this.supabase.initAuthChanges();
+        this.router.navigate(["/login"]);
+      }),
+    );
   }
 
   sendForgotPasswordEmail(email: string) {
@@ -46,7 +54,10 @@ export class AuthService {
   }
 
   isLoggedIn(): Observable<boolean> {
-    return this.supabase.session$.pipe(map((session) => !!session));
+    return from(this.supabase.client.auth.getSession()).pipe(
+      map(({ data }) => !!data.session),
+    );
+    // return this.supabase.session$.pipe(map((session) => !!session));
   }
 
   getUser() {
