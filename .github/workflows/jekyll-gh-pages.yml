@@ -1,5 +1,9 @@
 name: Deploy to GitHub Pages
 
+permissions:
+  contents: write
+  pages: write
+
 on:
   push:
     branches:
@@ -25,7 +29,6 @@ jobs:
       - name: Build app for GitHub Pages
         run: |
           npm run build -- --base-href ./
-          cp dist/restaurants-fluo/index.html dist/restaurants-fluo/404.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
