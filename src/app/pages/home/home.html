@@ -4,9 +4,6 @@
       <h2>Liste des restaurants</h2>
       <p>{{ restaurants.value()?.length }} restaurants trouvé</p>
     </div>
-    <div class="actions">
-      <button class="primary">Random Pick</button>
-    </div>
   </div>
   <div class="restaurant-grid">
     @for (restaurant of restaurants.value(); track restaurant) {

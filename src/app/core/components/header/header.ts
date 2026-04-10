@@ -17,10 +17,11 @@ export class Header {
   private readonly router = inject(Router);
 
   private readonly user = toSignal(this.supabase.user$);
-  isLoggedIn = toSignal(this.authService.isLoggedIn());
+  isLoggedIn = computed(() => !!this.user());
   public userProfile = computed(() => {
+    console.log(this.user());
     if (this.isLoggedIn()) {
-      console.log("PRofile updated:", this.user());
+      console.log("Profile updated:", this.user());
       return this.user() || null;
     }
     return null;
