@@ -66,7 +66,7 @@ export class RestaurantsComponent {
         this.restaurantService
           .getRestaurantById(this.restaurantId()!)
           .subscribe((res) => {
-            this.form.patchValue(res?.data?.[0]);
+            this.form.patchValue(res as unknown as RestaurantDTO);
           });
       }
     });
@@ -78,16 +78,14 @@ export class RestaurantsComponent {
         const restaurant: RestaurantDTO = this.form.value as RestaurantDTO;
         this.restaurantService
           .updateRestaurant(this.restaurantId()!, restaurant)
-          .subscribe((res) => {
-            console.log(res);
+          .subscribe(() => {
             this.refresh.set(!this.refresh());
           });
       } else {
         const restaurant: RestaurantDTO = this.form.value as RestaurantDTO;
         this.restaurantService
           .addRestaurant(restaurant, this.supabase.clientId!)
-          .subscribe((res) => {
-            console.log(res);
+          .subscribe(() => {
             this.form.reset();
           });
       }

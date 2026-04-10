@@ -61,10 +61,5 @@ export class AuthService {
 
   getUser() {
     return from(this.supabase.client.auth.getUser());
-    // return this.isLoggedIn().pipe(
-    //   filter((loggedIn) => loggedIn),
-    //   switchMap(() => {
-    //   }),
-    // );
   }
 }

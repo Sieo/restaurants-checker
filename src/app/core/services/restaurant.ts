@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { from } from "rxjs";
+import { from, Observable } from "rxjs";
 import { RestaurantDTO } from "../models/restaurant-dto";
 import { Supabase } from "./supabase";
 
@@ -25,7 +25,8 @@ export class RestaurantService {
           image_url,
           "priceRange",
           cuisine:cuisine(name),
-          ratings(rating, user_id)
+          ratings(rating, user_id),
+          comments(id, content, created_at, author:author_id(username))
           `,
           )
           .order("name", { ascending: true });
@@ -46,6 +47,13 @@ export class RestaurantService {
             (x_2: any) => x_2.user_id === userId,
           );
 
+          const comments = (r.comments || []).map((comment: any) => ({
+            id: comment.id,
+            name: comment.author?.username ?? "Anonyme",
+            comment: comment.content,
+            date: comment.created_at,
+          }));
+
           return {
             id: r.id,
             name: r.name,
@@ -56,6 +64,8 @@ export class RestaurantService {
             cuisine: r.cuisine?.name ?? null,
             rating: Math.round(avgRating || 0),
             my_rating: myRatingObj?.rating ?? null,
+            comments,
+            commentCount: comments.length,
           };
         });
       }),
@@ -95,9 +105,70 @@ export class RestaurantService {
     );
   }
 
-  getRestaurantById(id: string) {
+  getRestaurantById(id: string): Observable<RestaurantDTO | null> {
     return from(
-      this.supabase.client.from("restaurants").select("*").eq("id", id),
+      this.supabase.client.auth.getUser().then(async ({ data: { user } }) => {
+        const userId = user?.id;
+
+        const { data: data_1, error } = await this.supabase.client
+          .from("restaurants")
+          .select(
+            `
+          id,
+          name,
+          address,
+          description,
+          image_url,
+          "priceRange",
+          cuisine:cuisine(name),
+          ratings(rating, user_id),
+          comments(id, content, created_at, author:author_id(username))
+          `,
+          )
+          .eq("id", id)
+          .order("name", { ascending: true });
+        if (error) throw error;
+
+        const restaurants = (data_1 ?? []).map((r: any) => {
+          const allRatings = (r.ratings || []).filter(
+            (x: any) => x.rating != null,
+          );
+
+          const avgRating = allRatings.length
+            ? allRatings.reduce(
+                (sum: number, x_1: any) => sum + Number(x_1.rating),
+                0,
+              ) / allRatings.length
+            : 0;
+
+          const myRatingObj = allRatings.find(
+            (x_2: any) => x_2.user_id === userId,
+          );
+
+          const comments = (r.comments || []).map((comment: any) => ({
+            id: comment.id,
+            name: comment.author?.username ?? "Anonyme",
+            comment: comment.content,
+            date: comment.created_at,
+          }));
+
+          return {
+            id: r.id,
+            name: r.name,
+            address: r.address,
+            description: r.description,
+            image_url: r.image_url,
+            priceRange: r.priceRange,
+            cuisine: r.cuisine?.name ?? null,
+            rating: Math.round(avgRating || 0),
+            my_rating: myRatingObj?.rating ?? null,
+            comments,
+            commentCount: comments.length,
+          } as RestaurantDTO;
+        });
+
+        return restaurants[0] ?? null;
+      }),
     );
   }
 
@@ -128,6 +199,25 @@ export class RestaurantService {
   deleteRestaurant(restaurantId: string) {
     return from(
       this.supabase.client.from("restaurants").delete().eq("id", restaurantId),
+    );
+  }
+
+  addComment(restaurantId: string, comment: string) {
+    return from(
+      this.supabase.client
+        .from("comments")
+        .insert({
+          content: comment,
+          author_id: this.supabase.clientId,
+          restaurant_id: restaurantId,
+        })
+        .select(),
+    );
+  }
+
+  deleteComment(commentId: string) {
+    return from(
+      this.supabase.client.from("comments").delete().eq("id", commentId),
     );
   }
 }

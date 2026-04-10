@@ -1,3 +1,4 @@
+import { CommentDTO } from "./comment-dto";
 export interface RestaurantDTO {
   id?: string;
   name: string;
@@ -8,4 +9,6 @@ export interface RestaurantDTO {
   description: string;
   priceRange?: 1 | 2 | 3;
   my_rating?: number;
+  commentCount?: number;
+  comments?: CommentDTO[];
 }

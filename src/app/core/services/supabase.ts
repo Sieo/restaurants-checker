@@ -17,10 +17,6 @@ export class Supabase {
   );
 
   constructor() {
-    console.log(
-      "Initializing Supabase client with URL:",
-      environment.supabase.url,
-    );
     this.supabaseClient = createClient(
       environment.supabase.url,
       environment.supabase.SUPABASE_PUBLISHABLE_KEY,
@@ -30,7 +26,6 @@ export class Supabase {
 
   initAuthChanges() {
     this.supabaseClient.auth.onAuthStateChange((_, session) => {
-      console.log("Auth state changed. New session:", session);
       this.authSessionSubject.next(session);
     });
   }

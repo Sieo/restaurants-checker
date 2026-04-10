@@ -32,7 +32,6 @@ export class CuisinesComponent {
       this.cuisinesService
         .addCuisine(this.form.value.name!.toLowerCase())
         .subscribe((res) => {
-          console.log(res);
           this.form.reset();
           this.cuisines.reload();
         });

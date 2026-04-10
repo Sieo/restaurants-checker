@@ -1,4 +1,4 @@
-import { TitleCasePipe } from "@angular/common";
+import { DatePipe, TitleCasePipe } from "@angular/common";
 import {
   Component,
   computed,
@@ -6,19 +6,25 @@ import {
   input,
   model,
   output,
+  WritableSignal,
 } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { RouterLink } from "@angular/router";
+import { filter, switchMap } from "rxjs";
 import { RestaurantDTO } from "../../../core/models/restaurant-dto";
+import { PopupService } from "../../../core/services/popup.service";
 import { RestaurantService } from "../../../core/services/restaurant";
 
 @Component({
   selector: "app-restaurant-card",
-  imports: [TitleCasePipe, RouterLink],
+  imports: [TitleCasePipe, RouterLink, DatePipe, ReactiveFormsModule],
   templateUrl: "./restaurant-card.html",
   styleUrl: "./restaurant-card.css",
 })
 export class RestaurantCard {
   private readonly restaurantService = inject(RestaurantService);
+  private readonly fb = inject(FormBuilder);
+  private readonly popupService = inject(PopupService);
   restaurant = model<RestaurantDTO | null>({
     id: "1",
     name: "Blue Lagoon Bistro",
@@ -30,6 +36,7 @@ export class RestaurantCard {
     description:
       "A lively seaside destination offering the freshest catches and panoramic ocean views.",
     priceRange: 3,
+    commentCount: 0,
   });
 
   hasAction = input<boolean>(false);
@@ -38,6 +45,16 @@ export class RestaurantCard {
   priceRangeArray = computed(() => {
     const range = this.restaurant()?.priceRange ?? 1;
     return new Array(range).fill(0);
+  });
+
+  commentList = computed(() => {
+    return this.restaurant()?.comments ?? [];
+  });
+
+  displayComments: WritableSignal<boolean> = model(false);
+
+  commentForm = this.fb.group({
+    content: ["", Validators.required],
   });
 
   updateRating(note: number, restaurantId: string) {
@@ -66,5 +83,33 @@ export class RestaurantCard {
   openInMaps(address: string) {
     const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
     window.open(url, "_blank");
+  }
+
+  toggleDisplayComments() {
+    this.displayComments.set(!this.displayComments());
+  }
+
+  addComment() {
+    const content = this.commentForm.get("content")?.value;
+    if (this.restaurant()?.id && content) {
+      this.restaurantService
+        .addComment(this.restaurant()!.id!, content)
+        .subscribe(() => {
+          this.commentForm.reset();
+          this.refresh.emit(true);
+        });
+    }
+  }
+
+  deleteComment(commentId: string) {
+    this.popupService
+      .open("Confirmer", "Confirmez vous la suppression ?")
+      .pipe(
+        filter((res) => res),
+        switchMap(() => this.restaurantService.deleteComment(commentId)),
+      )
+      .subscribe(() => {
+        this.refresh.emit(true);
+      });
   }
 }

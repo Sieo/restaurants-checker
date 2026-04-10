@@ -47,12 +47,10 @@ export class LoginComponent {
     this.errorMessage.set(null);
     if (this.loginForm.valid) {
       if (this.isSigningUp()) {
-        console.log("Signing up with", this.loginForm.value);
         this.authService
           .signUp(this.loginForm.value.email!, this.loginForm.value.password!)
           .subscribe({
             next: (response) => {
-              console.log("Sign-up successful:", response);
               this.router.navigate(["/"]);
             },
             error: (error) => {
@@ -60,7 +58,6 @@ export class LoginComponent {
             },
           });
       } else {
-        console.log("Signing in with", this.loginForm.value);
         this.authService
           .signIn(this.loginForm.value.email!, this.loginForm.value.password!)
           .pipe(
@@ -79,7 +76,6 @@ export class LoginComponent {
             }),
           )
           .subscribe((response) => {
-            console.log("Sign-in successful:", response);
             // The error can be in the response...
             if (response.error) {
               if (response.error.message === "Invalid login credentials") {

@@ -1,6 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { RouterModule } from "@angular/router";
+import { RestaurantDTO } from "../../core/models/restaurant-dto";
 import { RestaurantService } from "../../core/services/restaurant";
 import { RestaurantCard } from "../../shared/components/restaurant-card/restaurant-card";
 
@@ -19,11 +20,11 @@ export class HomeComponent {
 
   onRefresh(restaurantId: string) {
     this.restaurantService
-      .getAverageRating(restaurantId)
-      .subscribe((avgRating) => {
+      .getRestaurantById(restaurantId)
+      .subscribe((restaurant) => {
         this.restaurants.update((restaurants) =>
-          restaurants!.map((r) =>
-            r.id === restaurantId ? { ...r, rating: avgRating } : r,
+          restaurants!.map((r: RestaurantDTO) =>
+            r.id === restaurantId ? (restaurant as any) : r,
           ),
         );
       });

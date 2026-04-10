@@ -19,9 +19,7 @@ export class Header {
   private readonly user = toSignal(this.supabase.user$);
   isLoggedIn = computed(() => !!this.user());
   public userProfile = computed(() => {
-    console.log(this.user());
     if (this.isLoggedIn()) {
-      console.log("Profile updated:", this.user());
       return this.user() || null;
     }
     return null;
